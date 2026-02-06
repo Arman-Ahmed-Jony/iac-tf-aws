@@ -11,88 +11,78 @@ provider "aws" {
   region = "us-west-1"
 }
 
+module "vpc" {
+  source = "./modules/vpc"
 
-resource "aws_security_group" "web_sg" {
-  name = "web-sg"
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  vpc_cidr           = "10.0.0.0/16"
+  public_subnet_cidr = "10.0.1.0/24"
+  az                 = "us-west-1a"
+  name               = "demo-vpc"
 }
 
-resource "aws_security_group" "worker_sg" {
-  name = "worker-sg"
+module "web_sg" {
+  source = "./modules/security_group"
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  name   = "web-sg"
+  vpc_id = module.vpc.vpc_id
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  ingress_rules = [
+    {
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    },
+    {
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  ]
 }
 
+module "worker_sg" {
+  source = "./modules/security_group"
 
-resource "tls_private_key" "web_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
+  name   = "worker-sg"
+  vpc_id = module.vpc.vpc_id
+
+  ingress_rules = [
+    {
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  ]
 }
 
-resource "local_file" "web_private_key" {
-  content         = tls_private_key.web_key.private_key_pem
-  filename        = "keys/web-key.pem"
-  file_permission = "0400"
+module "web_keypair" {
+  source = "./modules/keypair"
+
+  key_name         = "web-key"
+  private_key_path = "keys/web-key.pem"
 }
 
-resource "aws_key_pair" "web_key" {
-  key_name   = "web-key-name"
-  public_key = tls_private_key.web_key.public_key_openssh
-}
+module "worker_keypair" {
+  source = "./modules/keypair"
 
-resource "tls_private_key" "worker_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
+  key_name         = "worker-key"
+  private_key_path = "keys/worker-key.pem"
 }
-
-resource "local_file" "worker_private_key" {
-  content         = tls_private_key.worker_key.private_key_pem
-  filename        = "keys/worker-key.pem"
-  file_permission = "0400"
-}
-
-resource "aws_key_pair" "worker_key" {
-  key_name   = "worker-key-name"
-  public_key = tls_private_key.worker_key.public_key_openssh
-}
-
 
 module "web" {
   source = "./modules/ec2"
 
   ami           = var.web_ami
   instance_type = "t3.micro"
-  subnet_id     = var.web_subnet_id
-  key_name      = aws_key_pair.web_key.key_name
+  subnet_id     = module.vpc.public_subnet_id
+  key_name      = module.web_keypair.key_name
   volume_size   = 10
   name          = "web-server"
 
-  security_group_ids = [aws_security_group.web_sg.id]
+  security_group_ids = [module.web_sg.sg_id]
   user_data          = file("user-data/web.sh")
 }
 
@@ -101,11 +91,11 @@ module "worker" {
 
   ami           = var.worker_ami
   instance_type = "t3.small"
-  subnet_id     = var.worker_subnet_id
-  key_name      = aws_key_pair.worker_key.key_name
+  subnet_id     = module.vpc.public_subnet_id
+  key_name      = module.worker_keypair.key_name
   volume_size   = 30
   name          = "worker-server"
 
-  security_group_ids = [aws_security_group.worker_sg.id]
+  security_group_ids = [module.worker_sg.sg_id]
   user_data          = file("user-data/worker.sh")
 }
