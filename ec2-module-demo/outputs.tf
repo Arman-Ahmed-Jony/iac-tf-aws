@@ -32,9 +32,9 @@ output "worker_public_ip" {
 
 
 output "web_ssh_command" {
-  value = "ssh -i keys/web-key.pem ubuntu@${module.web.public_ip}"
+  value = "ssh -i keys/arman-ahmed-web-key.pem ubuntu@${module.web.public_ip}"
 }
 
 output "worker_ssh_command" {
-  value = "ssh -i keys/worker-key.pem ubuntu@${module.worker.public_ip}"
+  value = "ssh -i keys/arman-ahmed-worker-key.pem ec2-user@${module.worker.public_ip}"
 }
