@@ -1,9 +1,6 @@
 resource "aws_vpc" "this" {
   cidr_block = var.vpc_cidr
 
-  tags = {
-    Name = var.name
-  }
 }
 
 resource "aws_internet_gateway" "this" {
