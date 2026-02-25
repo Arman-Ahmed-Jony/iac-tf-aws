@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Terraform Infra Diagram</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f0f2f5;
+      color: #222;
+      padding: 28px 32px;
+      line-height: 1.5;
+    }
+
+    h1 {
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 28px 0 12px;
+      color: #333;
+    }
+    .meta {
+      color: #666;
+      font-size: 0.85rem;
+      margin-top: 4px;
+      margin-bottom: 28px;
+    }
+
+    /* ── Outputs ── */
+    .outputs {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+    .output-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 14px 18px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      border-left: 4px solid #2196F3;
+    }
+    .output-card.blue   { border-color: #2196F3; }
+    .output-card.green  { border-color: #4CAF50; }
+    .output-card.orange { border-color: #FF9800; }
+    .output-card.purple { border-color: #9C27B0; }
+    .output-card.teal   { border-color: #009688; }
+    .output-card.red    { border-color: #E53935; }
+    .output-card label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #888;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .output-card code {
+      font-size: 0.82rem;
+      word-break: break-all;
+      background: #f5f7fa;
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: block;
+    }
+
+    /* ── Summary table ── */
+    table {
+      width: 100%;
+      max-width: 480px;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      margin-bottom: 8px;
+    }
+    th, td {
+      padding: 10px 16px;
+      text-align: left;
+      font-size: 0.88rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    th {
+      background: #f5f7fa;
+      font-weight: 600;
+      color: #555;
+    }
+    tr:last-child td { border-bottom: none; }
+
+    /* ── Diagram ── */
+    .diagram-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-top: 28px;
+      overflow-x: auto;
+    }
+    .mermaid svg { max-width: 100%; height: auto; }
+  </style>
+</head>
+<body>
+  <h1>Terraform Infrastructure Diagram</h1>
+  <p class="meta">
+    Source: <strong>terraform.tfstate</strong> &nbsp;·&nbsp;
+    Terraform: <strong>1.14.5</strong> &nbsp;·&nbsp;
+    State serial: <strong>45</strong>
+  </p>
+
+  
+  <h2>Outputs</h2>
+  <div class="outputs">
+        <div class="output-card blue">
+          <label>public_subnet_id</label>
+          <code>subnet-031e08af47da455e7</code>
+        </div>
+        <div class="output-card green">
+          <label>vpc_id</label>
+          <code>vpc-01709a418f09530e3</code>
+        </div>
+        <div class="output-card orange">
+          <label>web_key_name</label>
+          <code>arman-ahmed-web-key</code>
+        </div>
+        <div class="output-card purple">
+          <label>web_public_ip</label>
+          <code>18.236.76.250</code>
+        </div>
+        <div class="output-card teal">
+          <label>web_sg_id</label>
+          <code>sg-03795ce2bdbd1451a</code>
+        </div>
+        <div class="output-card red">
+          <label>web_ssh_command</label>
+          <code>ssh -i keys/arman-ahmed-web-key.pem ubuntu@18.236.76.250</code>
+        </div>
+        <div class="output-card blue">
+          <label>worker_key_name</label>
+          <code>arman-ahmed-worker-key</code>
+        </div>
+        <div class="output-card green">
+          <label>worker_public_ip</label>
+          <code>54.148.84.179</code>
+        </div>
+        <div class="output-card orange">
+          <label>worker_sg_id</label>
+          <code>sg-076468ff5a401b8da</code>
+        </div>
+        <div class="output-card purple">
+          <label>worker_ssh_command</label>
+          <code>ssh -i keys/arman-ahmed-worker-key.pem ec2-user@54.148.84.179</code>
+        </div>
+  </div>
+
+  
+  <h2>Resources (16 total)</h2>
+  <table>
+    <thead><tr><th>Type</th><th>Count</th></tr></thead>
+    <tbody><tr><td>aws_instance</td><td>2</td></tr><tr><td>aws_internet_gateway</td><td>1</td></tr><tr><td>aws_key_pair</td><td>2</td></tr><tr><td>aws_route</td><td>1</td></tr><tr><td>aws_route_table</td><td>1</td></tr><tr><td>aws_route_table_association</td><td>1</td></tr><tr><td>aws_security_group</td><td>2</td></tr><tr><td>aws_subnet</td><td>1</td></tr><tr><td>aws_vpc</td><td>1</td></tr><tr><td>local_file</td><td>2</td></tr><tr><td>tls_private_key</td><td>2</td></tr></tbody>
+  </table>
+
+  <div class="diagram-box">
+    <div class="mermaid">
+flowchart TD
+    module_vpc_aws_internet_gateway_this["🔀 Internet Gateway\nvpc / this\nigw-09f26ec4baab180fa"]
+    module_vpc_aws_route_internet["➡️ Route\nvpc / internet\ndestination_cidr_block: 0.0.0.0/0\nr-rtb-0617fccdd5c02ec6f1…"]
+    module_vpc_aws_route_table_public["📋 Route Table\nvpc / public\nrtb-0617fccdd5c02ec6f"]
+    module_vpc_aws_route_table_association_public["🔗 Route Table Association\nvpc / public\nrtbassoc-07c8715500b9942…"]
+    module_vpc_aws_subnet_public["🔵 Subnet\nvpc / public\ncidr_block: 10.0.1.0/24\navailability_zone: us-west-2a\nsubnet-031e08af47da455e7"]
+    module_vpc_aws_vpc_this["☁️ Vpc\nvpc / this\ncidr_block: 10.0.0.0/16\nvpc-01709a418f09530e3"]
+    module_web_aws_instance_this["🖥️ Instance\nweb / this\ninstance_type: t3a.micro\npublic_ip: 18.236.76.250\nprivate_ip: 10.0.1.53\ninstance_state: running\ni-086543956bec7ffe4"]
+    module_web_keypair_aws_key_pair_this["🔑 Key Pair\nweb_keypair / this\nkey_name: arman-ahmed-web-key\narman-ahmed-web-key"]
+    module_web_keypair_local_file_private_key["📄 Local File\nweb_keypair / private_key\nfilename: keys/arman-ahmed-web-key…"]
+    module_web_keypair_tls_private_key_this["🔐 Tls Private Key\nweb_keypair / this\nalgorithm: RSA"]
+    module_web_sg_aws_security_group_this["🛡️ Security Group\nweb_sg / this\nname: arman-ahmed-web-sg\nsg-03795ce2bdbd1451a"]
+    module_worker_aws_instance_this["🖥️ Instance\nworker / this\ninstance_type: t3a.micro\npublic_ip: 54.148.84.179\nprivate_ip: 10.0.1.44\ninstance_state: running\ni-025e90eaf8b619fba"]
+    module_worker_keypair_aws_key_pair_this["🔑 Key Pair\nworker_keypair / this\nkey_name: arman-ahmed-worker-key\narman-ahmed-worker-key"]
+    module_worker_keypair_local_file_private_key["📄 Local File\nworker_keypair / private_key\nfilename: keys/arman-ahmed-worker-…"]
+    module_worker_keypair_tls_private_key_this["🔐 Tls Private Key\nworker_keypair / this\nalgorithm: RSA"]
+    module_worker_sg_aws_security_group_this["🛡️ Security Group\nworker_sg / this\nname: arman-ahmed-worker-sg\nsg-076468ff5a401b8da"]
+
+    module_vpc_aws_vpc_this --> module_vpc_aws_internet_gateway_this
+    module_vpc_aws_internet_gateway_this --> module_vpc_aws_route_internet
+    module_vpc_aws_route_table_public --> module_vpc_aws_route_internet
+    module_vpc_aws_vpc_this --> module_vpc_aws_route_table_public
+    module_vpc_aws_subnet_public --> module_vpc_aws_route_table_association_public
+    module_vpc_aws_route_table_public --> module_vpc_aws_route_table_association_public
+    module_vpc_aws_vpc_this --> module_vpc_aws_subnet_public
+    module_vpc_aws_subnet_public --> module_web_aws_instance_this
+    module_web_sg_aws_security_group_this --> module_web_aws_instance_this
+    module_web_keypair_aws_key_pair_this --> module_web_aws_instance_this
+    module_web_keypair_tls_private_key_this --> module_web_keypair_aws_key_pair_this
+    module_web_keypair_tls_private_key_this --> module_web_keypair_local_file_private_key
+    module_vpc_aws_vpc_this --> module_web_sg_aws_security_group_this
+    module_vpc_aws_subnet_public --> module_worker_aws_instance_this
+    module_worker_keypair_aws_key_pair_this --> module_worker_aws_instance_this
+    module_worker_sg_aws_security_group_this --> module_worker_aws_instance_this
+    module_worker_keypair_tls_private_key_this --> module_worker_keypair_aws_key_pair_this
+    module_worker_keypair_tls_private_key_this --> module_worker_keypair_local_file_private_key
+    module_vpc_aws_vpc_this --> module_worker_sg_aws_security_group_this
+
+    classDef vpc     fill:#e8f4f8,stroke:#2196F3,color:#000,stroke-width:2px
+    classDef subnet  fill:#e8f8e8,stroke:#4CAF50,color:#000,stroke-width:2px
+    classDef ec2     fill:#fff8e1,stroke:#FF9800,color:#000,stroke-width:2px
+    classDef sg      fill:#fce4ec,stroke:#E91E63,color:#000,stroke-width:2px
+    classDef key     fill:#f3e5f5,stroke:#9C27B0,color:#000,stroke-width:2px
+    classDef inet    fill:#e3f2fd,stroke:#1565C0,color:#000,stroke-width:2px
+    classDef rt      fill:#e8eaf6,stroke:#3F51B5,color:#000,stroke-width:2px
+    classDef file    fill:#f1f8e9,stroke:#558B2F,color:#000,stroke-width:2px
+    classDef db      fill:#fbe9e7,stroke:#BF360C,color:#000,stroke-width:2px
+    classDef default fill:#f5f5f5,stroke:#9e9e9e,color:#000,stroke-width:1px
+
+    class module_vpc_aws_internet_gateway_this,module_vpc_aws_vpc_this vpc
+    class module_vpc_aws_route_internet,module_vpc_aws_route_table_public,module_vpc_aws_route_table_association_public rt
+    class module_vpc_aws_subnet_public subnet
+    class module_web_aws_instance_this,module_worker_aws_instance_this ec2
+    class module_web_keypair_aws_key_pair_this,module_web_keypair_tls_private_key_this,module_worker_keypair_aws_key_pair_this,module_worker_keypair_tls_private_key_this key
+    class module_web_keypair_local_file_private_key,module_worker_keypair_local_file_private_key file
+    class module_web_sg_aws_security_group_this,module_worker_sg_aws_security_group_this sg
+    </div>
+  </div>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      flowchart: { curve: 'basis', padding: 20 },
+    });
+  </script>
+</body>
+</html>
