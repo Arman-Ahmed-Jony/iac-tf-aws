@@ -6,6 +6,10 @@ output "public_subnet_id" {
   value = module.vpc.public_subnet_id
 }
 
+output "public_subnet_id_2" {
+  value = module.vpc.public_subnet_id_2
+}
+
 output "web_sg_id" {
   value = module.web_sg.sg_id
 }
@@ -22,19 +26,14 @@ output "worker_key_name" {
   value = module.worker_keypair.key_name
 }
 
-output "web_public_ip" {
-  value = module.web.public_ip
+output "alb_dns_name" {
+  value = aws_lb.web.dns_name
 }
 
-output "worker_public_ip" {
-  value = module.worker.public_ip
+output "apache_url" {
+  value = "http://${aws_lb.web.dns_name}/apache"
 }
 
-
-output "web_ssh_command" {
-  value = "ssh -i keys/web-key.pem ubuntu@${module.web.public_ip}"
-}
-
-output "worker_ssh_command" {
-  value = "ssh -i keys/worker-key.pem ubuntu@${module.worker.public_ip}"
+output "nginx_url" {
+  value = "http://${aws_lb.web.dns_name}/nginx"
 }
